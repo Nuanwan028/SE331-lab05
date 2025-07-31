@@ -35,15 +35,27 @@ const { event } = storeToRefs(store)
 //     })
 // })
 </script>
-
 <template>
-    <div v-if="event">
-        <h1>{{ event.title }}</h1>
-        <nav>
-            <RouterLink :to="{ name: 'event-detail-view' }">Details </RouterLink> |
-            <RouterLink :to="{ name: 'event-register-view' }">Register </RouterLink> |
-            <RouterLink :to="{ name: 'event-edit-view' }">Edit</RouterLink>
+    <div v-if="event" class="p-6 max-w-3xl mx-auto">
+        <h1 class="text-3xl font-bold mb-4">{{ event.title }}</h1>
+
+        <nav class="mb-6 text-lg  gap-x-4 items-center">
+            <RouterLink :to="{ name: 'event-detail-view' }" class="text-gray-700 hover:text-green-500"
+                exact-active-class="text-green-500">
+                Details
+            </RouterLink>
+            <span class="text-gray-700">|</span>
+            <RouterLink :to="{ name: 'event-register-view' }" class="text-gray-700 hover:text-green-500"
+                active-class="text-green-500">
+                Register
+            </RouterLink>
+            <span class="text-gray-700">|</span>
+            <RouterLink :to="{ name: 'event-edit-view' }" class="text-gray-700 hover:text-green-500"
+                active-class="text-green-500">
+                Edit
+            </RouterLink>
         </nav>
+
         <RouterView :event="event" />
     </div>
 </template>

@@ -1,31 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type Event from '@/types';
+import type { Event } from '@/types'
 defineProps<{
   event: Event;
 }>();
 </script>
 
 <template>
-  <div class="event-details">
-    <p class="detail-text">{{ event.category }}</p>
-    <p class="detail-text">{{ event.organizer }}</p>
+  <div class="flex flex-col items-end mt-[5px] mb-[40px] pr-[5px]">
+    <p class="text-base text-right m-0">{{ event.category }}</p>
+    <p class="text-base text-right m-0">{{ event.organizer }}</p>
   </div>
 </template>
-
-<style scoped>
-.event-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-top: 5px;
-  margin-bottom: 40px;
-  padding-right: 5px;
-}
-
-.detail-text {
-  font-size: 1rem;
-  text-align: right;
-  margin: 0;
-}
-</style>

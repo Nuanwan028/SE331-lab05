@@ -53,99 +53,39 @@ const hasNextPage = computed(() => {
 </script>
 
 <template>
-  <h1>Events For Good</h1>
+  <h1 class="text-4xl font-bold mb-8 text-center">Events For Good</h1>
 
-  <div class="page-size-selector">
+  <!-- Selector -->
+  <div class="mb-6 flex items-center gap-2 font-bold text-base justify-center">
     <label for="pageSize">Events per page:</label>
-    <select id="pageSize" v-model="selectedPageSize" @change="updatePageSize">
-      <option v-for="size in [1, 2, 3, 4]" :value="size" :key="size">{{ size }}</option>
+    <select id="pageSize" v-model="selectedPageSize" @change="updatePageSize"
+      class="px-3 py-1 border border-gray-300 rounded-md text-base bg-gray-100 text-gray-800 cursor-pointer transition-all hover:border-green-500 hover:bg-white focus:outline-none focus:ring-2 focus:ring-green-300">
+      <option v-for="size in [1, 2, 3, 4]" :value="size" :key="size">
+        {{ size }}
+      </option>
     </select>
   </div>
 
-  <div class="events">
-    <!-- Loop through the events and render an EventCard for each -->
+  <!-- List -->
+  <div class="flex flex-col items-center ">
     <EventCard v-for="event in events" :key="event.id" :event="event" />
 
-    <div class="page-info">
+    <!-- Page Info -->
+    <div class="my-4 font-bold">
       Page {{ page }} of {{ Math.ceil(totalEvents / props.pageSize) }}
     </div>
 
-    <div class="pagination">
-      <RouterLink id="page-prev" :to="{ name: 'event-list-view', query: { page: page - 1, pageSize: selectedPageSize } }" v-if="page != 1">
+    <!-- Pagination -->
+    <div class="flex w-[290px]">
+      <RouterLink id="page-prev" class="flex-1 text-left text-gray-700 hover:text-green-500"
+        :to="{ name: 'event-list-view', query: { page: page - 1, pageSize: selectedPageSize } }" v-if="page != 1">
         &#60; Prev Page
       </RouterLink>
 
-      <RouterLink id="page-next" :to="{ name: 'event-list-view', query: { page: page + 1, pageSize: selectedPageSize } }" v-if="hasNextPage">
+      <RouterLink id="page-next" class="flex-1 text-right text-gray-700 hover:text-green-500"
+        :to="{ name: 'event-list-view', query: { page: page + 1, pageSize: selectedPageSize } }" v-if="hasNextPage">
         Next Page &#62;
       </RouterLink>
     </div>
   </div>
 </template>
-
-<style scoped>
-.page-size-selector {
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: bold;
-  font-size: 16px;
-  justify-content: center;
-}
-
-.page-size-selector select {
-  padding: 5px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-  background-color: #f9f9f9;
-  color: #2c3e50;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-size-selector select:hover {
-  border-color: #42b983;
-  background-color: #fff;
-}
-
-.page-size-selector select:focus {
-  outline: none;
-  border-color: #42b983;
-  box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.3);
-}
-
-/* Styles for the main events container */
-.events {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Styles for the pagination links container */
-.pagination {
-  display: flex;
-  width: 290px; /* Fixed width for pagination links */
-}
-
-.pagination a {
-  flex: 1; /* Distribute space equally between links */
-  text-decoration: none;
-  color: #2c3e50;
-}
-
-/* Alignment for the previous page link */
-#page-prev {
-  text-align: left;
-}
-
-/* Alignment for the next page link */
-#page-next {
-  text-align: right;
-}
-
-.page-info {
-  margin: 1rem 0;
-  font-weight: bold;
-}
-</style>
