@@ -2,6 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
 import { storeToRefs } from 'pinia'
+// import { Analytics } from "@vercel/analytics/next"
 
 const store = useMessageStore()
 const { message } = storeToRefs(store)
@@ -13,6 +14,7 @@ const { message } = storeToRefs(store)
       <div class="animate-fade" v-if="message">
         <h4 class="text-green-700 text-lg font-medium">{{ message }}</h4>
       </div>
+      <h1>Deploy with Vercel</h1>
       <div class="wrapper">
         <nav class="py-6">
           <RouterLink
@@ -33,3 +35,4 @@ const { message } = storeToRefs(store)
     <RouterView />
   </div>
 </template>
+  <SpeedInsights />
