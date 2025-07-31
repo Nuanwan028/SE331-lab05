@@ -8,11 +8,14 @@ import App from './App.vue'
 import router from './router'
 import 'nprogress/nprogress.css'
 
-const app = createApp(App)
+// Vercel Analytics & Speed Insights
 import { inject } from '@vercel/analytics'
-inject()
-
 import { injectSpeedInsights } from '@vercel/speed-insights'
+
+const app = createApp(App)
+
+// Inject ก่อน mount
+inject()
 injectSpeedInsights()
 
 app.use(createPinia())
