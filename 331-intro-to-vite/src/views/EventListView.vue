@@ -1,39 +1,12 @@
-<template>
-  <h1>Events For Good</h1>
-
-  <div class="page-size-selector">
-    <label for="pageSize">Events per page:</label>
-    <select id="pageSize" v-model="selectedPageSize" @change="updatePageSize">
-      <option v-for="size in [1, 2, 3, 4]" :value="size">{{ size }}</option>
-    </select>
-  </div>
-
-  <div class="events">
-    <EventCard v-for="event in events" :key="event.id" :event="event" />
-
-    <div class="page-info">
-      Page {{ page }} of {{ Math.ceil(totalEvents / props.pageSize) }}
-    </div>
-
-    <div class="pagination">
-      <RouterLink id="page-prev" :to="{ name: 'event-list-view', query: { page: page - 1 } }" v-if="page != 1">&#60;
-        Prev Page</RouterLink>
-
-      <RouterLink id="page-next" :to="{ name: 'event-list-view', query: { page: page + 1 } }" v-if="hasNextPage">Next
-        Page &#62;</RouterLink>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import EventCard from '@/components/EventCard.vue'
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect, onMounted } from 'vue'
 import EventService from '@/services/EventService'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const events = ref([])
+const events = ref<Event | null>(null)
 const totalEvents = ref(0)
 
 const props = defineProps({
@@ -44,7 +17,7 @@ const props = defineProps({
   pageSize: {
     type: Number,
     required: false,
-    default: 2
+    default: 2 // Default page size if not provided
   }
 })
 
@@ -61,22 +34,53 @@ const updatePageSize = () => {
   })
 }
 
-watchEffect(() => {
-  events.value = []
-  EventService.getEvents(props.pageSize, page.value)
-    .then(response => {
-      events.value = response.data
-      totalEvents.value = response.headers['x-total-count']
-    })
-    .catch(error => {
-      console.error('Error fetching events:', error)
-    })
+onMounted(() => {
+  watchEffect(() => {
+    EventService.getEvents(props.pageSize, page.value)
+      .then(response => {
+        events.value = response.data
+        totalEvents.value = response.headers['x-total-count']
+      })
+      .catch(error => {
+        console.error('Error fetching events:', error)
+      })
+  })
 })
 
 const hasNextPage = computed(() => {
   return page.value < Math.ceil(totalEvents.value / props.pageSize)
 })
 </script>
+
+<template>
+  <h1>Events For Good</h1>
+
+  <div class="page-size-selector">
+    <label for="pageSize">Events per page:</label>
+    <select id="pageSize" v-model="selectedPageSize" @change="updatePageSize">
+      <option v-for="size in [1, 2, 3, 4]" :value="size" :key="size">{{ size }}</option>
+    </select>
+  </div>
+
+  <div class="events">
+    <!-- Loop through the events and render an EventCard for each -->
+    <EventCard v-for="event in events" :key="event.id" :event="event" />
+
+    <div class="page-info">
+      Page {{ page }} of {{ Math.ceil(totalEvents / props.pageSize) }}
+    </div>
+
+    <div class="pagination">
+      <RouterLink id="page-prev" :to="{ name: 'event-list-view', query: { page: page - 1, pageSize: selectedPageSize } }" v-if="page != 1">
+        &#60; Prev Page
+      </RouterLink>
+
+      <RouterLink id="page-next" :to="{ name: 'event-list-view', query: { page: page + 1, pageSize: selectedPageSize } }" v-if="hasNextPage">
+        Next Page &#62;
+      </RouterLink>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .page-size-selector {
@@ -111,28 +115,31 @@ const hasNextPage = computed(() => {
   box-shadow: 0 0 0 2px rgba(66, 185, 131, 0.3);
 }
 
-
+/* Styles for the main events container */
 .events {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+/* Styles for the pagination links container */
 .pagination {
   display: flex;
-  width: 290px;
+  width: 290px; /* Fixed width for pagination links */
 }
 
 .pagination a {
-  flex: 1;
+  flex: 1; /* Distribute space equally between links */
   text-decoration: none;
   color: #2c3e50;
 }
 
+/* Alignment for the previous page link */
 #page-prev {
   text-align: left;
 }
 
+/* Alignment for the next page link */
 #page-next {
   text-align: right;
 }
